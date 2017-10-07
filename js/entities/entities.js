@@ -31,7 +31,10 @@ game.BirdEntity = me.Entity.extend({
         // collision shape
         this.collided = false;
 
-        this.gravityForce = 0.2;
+        this.gravityForce = 0.3;
+
+        this.velY = 0;
+        this.jumpForce = 5;
     },
 
     update: function(dt) {
@@ -43,15 +46,16 @@ game.BirdEntity = me.Entity.extend({
         this.renderable.currentTransform.identity();
         if (me.input.isKeyPressed('fly')) {
             me.audio.play('wing');
-            this.gravityForce = 0.2;
+            //this.gravityForce = 0.2;
             var currentPos = this.pos.y;
 
             this.angleTween.stop();
-            this.flyTween.stop();
+            //this.flyTween.stop();
 
+            //this.flyTween.to({y: currentPos - 72}, 50);
+            //this.flyTween.start();
 
-            this.flyTween.to({y: currentPos - 72}, 50);
-            this.flyTween.start();
+            this.velY = -this.jumpForce
 
             this.angleTween.to({currentAngle: that.maxAngleRotation}, 50).onComplete(function(angle) {
                 that.renderable.currentTransform.rotate(that.maxAngleRotation);
@@ -59,8 +63,13 @@ game.BirdEntity = me.Entity.extend({
             this.angleTween.start();
 
         } else {
-            this.gravityForce += 0.2;
-            this.pos.y += me.timer.tick * this.gravityForce;
+            //this.gravityForce += 0.2;
+            //this.pos.y += me.timer.tick * this.gravityForce;
+            this.pos.y += this.velY;
+            this.velY += this.gravityForce;
+
+            console.log("hello")
+
             this.currentAngle += Number.prototype.degToRad(3);
             if (this.currentAngle >= this.maxAngleRotationDown) {
                 this.renderable.currentTransform.identity();
